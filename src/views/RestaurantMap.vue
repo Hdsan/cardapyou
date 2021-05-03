@@ -28,7 +28,7 @@ export default {
       console.log(this.headers);
     },
     back(){
-      this.$router.push({ name: 'Login' })
+      this.$router.push({ name: 'Home' })
     },
     getRestaurantInfos(itemId){
         console.log(itemId)

@@ -48,7 +48,7 @@ export default {
       this.$router.push({ name: 'Home' })
     },
     login(){
-      if(this.type == 'usuario'){
+      if(this.type == 'usuário'){
          this.$router.push({ name: 'Map' })
       }
       else{
