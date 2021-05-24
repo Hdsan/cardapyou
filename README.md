@@ -1,5 +1,10 @@
 # cardapyou
 
+Usuário 
+email: hudson@ferreira.com senha : dev
+
+restaurante: batata@tony.com senha :dev
+
 ## Project setup
 ```
 npm install
