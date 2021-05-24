@@ -3,13 +3,10 @@
       <img<img id="background" src="../assets/back-image.png" alt="img" />
     <v-container id="container">
       <v-layout column class="layout-home">
-      <p id="title">Deseja acessar como um:</p>
-        <v-btn height="70px" rounded 
-        @click="toLogin('usuário')"
-        class="sign-btn">Usuário</v-btn>
+        
         <v-btn height="70px" rounded 
         @click="toLogin('restaurante')"
-        class="sign-btn">Restaurante</v-btn>
+        class="sign-btn">Login</v-btn>
         <v-layout column>
         <v-btn  rounded
         @click="SignUp"
@@ -25,8 +22,8 @@ export default {
   name: "Home",
   components: {},
   methods:{
-    toLogin(type){
-      this.$router.push({ name: 'Login' ,params:{clientType : type }})
+    toLogin(){
+      this.$router.push({ name: 'Login' })
     },
     SignUp(){
       this.$router.push({ name: 'Signup'})
@@ -37,6 +34,7 @@ export default {
 <style>
 .sign-btn {
   width: 90%;
+  margin-top: 10% !important;
   background: #08cf105e !important;
   font-size: 18px !important;
   font-weight: 500 !important;

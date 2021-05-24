@@ -2,10 +2,10 @@
   <div id="animation">
     <alert :show='alert.show' :title="alert.title" 
       :message="alert.message"  ></alert>
-      <v-btn icon id="back-btn" 
+      <v-btn icon id="back-btn-s" 
      x-large @click="back()">
       <v-icon>mdi-keyboard-backspace</v-icon>
-       </v-btn>   
+       </v-btn>    
 
     <v-container class="signContainer">
       <div class="title">
@@ -86,13 +86,14 @@
     <v-checkbox color="green"
     label="li e concordo com as letras pequenas" v-model="terms"></v-checkbox>
     <v-btn id="confirmSignup" 
-    @click="setAlert()"
+    @click="signUp()"
     :disabled="!terms">cadastrar</v-btn>
     </v-container>
 
   </div>
 </template>
 <script>
+import ClientController from '../controllers/AccountsController'
 import alert from '../components/alert'
 export default {
     components: { 
@@ -100,6 +101,7 @@ export default {
     },
   data() {
     return {
+      clientController: new ClientController(),
       terms: false,
       type: null,
       alert: {
@@ -123,7 +125,14 @@ export default {
           this.alert.title = "Cadastro efetuado!"
           this.alert.message = "Seu cadastro foi efetuado com sucesso! redirecionando pra tela de login"
           this.alert.show = true
-
+      },
+      signUp(){
+        if(this.type === 0){
+          this.clientController.createClient(this.user);
+        }
+        else{
+          this.clientController.createRestaurant(this.restaurant);
+        }
       }
   }
 };
@@ -152,5 +161,10 @@ export default {
 }
 .v-messages{
     color: red !important;
+}
+#back-btn-s{
+  position: absolute;
+  top: 10px;
+  left: 10px;
 }
 </style>

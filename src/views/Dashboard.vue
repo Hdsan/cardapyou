@@ -1,7 +1,7 @@
 <template>
   <div>
     <v-card>
-      <img src="https://i.imgur.com/s53kZUo.png" id="banner" />
+      <img :src="user.img" id="banner" />
       <img src="https://i.imgur.com/YNAiIRm.png" height="100px" id="avatar" />
 
       <v-btn icon id="back-btn" x-large @click="back()">
@@ -9,7 +9,7 @@
       </v-btn>
 
       <v-layout>
-        <v-flex id="name"> Batatony's </v-flex>
+        <v-flex id="name">{{ user.name }} </v-flex>
         <v-flex>
           <v-rating
             :value="user.rating"
@@ -22,7 +22,7 @@
       <v-layout>
         <v-flex>
           <v-icon>mdi-map-marker</v-icon>
-          Centro, Gotham
+          {{ user.address }}
         </v-flex>
       </v-layout>
       <v-layout>
@@ -44,8 +44,8 @@
           class="image"
         />
         <v-layout column>
-          <div class="foodTitle">{{ item.title }}</div>
-          <div class="subtitle">{{ item.preco }} R$</div>
+          <div class="foodTitle">{{ item.name }}</div>
+          <div class="subtitle">{{ item.price }} R$</div>
         </v-layout>
         <v-icon>mdi-lead-pencil</v-icon>
       </v-card>
@@ -73,39 +73,27 @@
   </div>
 </template>
 <script>
+import RecipesController from "../controllers/RecipesController";
 export default {
+  created() {
+    this.user = JSON.parse(localStorage.getItem("LoggedAccount_city"));
+    this.getRecipes();
+    console.log(this.foods)
+  },
   data() {
     return {
+      recipeController: new RecipesController(),
+      account: null,
       add: false,
-      user: {
-        id: "1",
-        name: "Batatony's",
-        img: "https://i.imgur.com/YNAiIRm.png",
-        location: "Centro, Gotham",
-        deliver: true,
-        type: "Lanches",
-        rating: 5,
-      },
-      foods: [
-        {
-          id: "1",
-          userId: "1",
-          title: "Burgão",
-          img: "https://i.imgur.com/LgMUpbU.jpg",
-          preco: "20,00",
-        },
-        {
-          id: "2",
-          userId: "1",
-          title: "Combo Burguer",
-          img: "https://i.imgur.com/3Jcy5WC.jpg",
-          preco: "30,00",
-        },
-      ],
+      user: {},
+      foods: [],
     };
   },
   methods: {
-      back() {
+    async getRecipes() {
+      this.foods = await this.recipeController.GetRecipesbyId(this.user._id);
+    },
+    back() {
       this.$router.push({ name: "Login" });
     },
   },

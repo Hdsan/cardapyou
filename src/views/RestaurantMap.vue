@@ -1,17 +1,21 @@
 <template>
   <div>
+    <Load
+    :active = loading
+    ></Load>
     <img src="../assets/map.png" width="90%" height="70%" alt="map" id="mapMock" />
+    <div>Restaurantes da cidade</div>
     <v-data-table
       :headers="headers"
-      :items="places"
+      :items="restaurants"
       hide-default-footer
       no-data-text="Nenhum restaurante encontrado"
       no-results-text="Nenhum restaurante encontrado"
     >
       <template v-slot:item="{ item }">
-        <tr @click="getRestaurantInfos(item.id)">
+        <tr @click="getRestaurantInfos(item.mail)">
           <td class="text-xs-center">{{ item.name }}</td>
-          <td class="text-xs-center">{{ item.category }}</td>
+          <td class="text-xs-center">{{ item.address }}</td>
           <td class="text-xs-center">
          <v-icon >mdi-chevron-right-circle</v-icon></td>
         </tr>
@@ -21,32 +25,43 @@
   </div>
 </template>
 <script>
+import AccountController from '../controllers/AccountsController'
+import Load from '../components/loading'
 export default {
-  props: {},
-  methods: {
-    log() {
-      console.log(this.headers);
-    },
-    back(){
-      this.$router.push({ name: 'Home' })
-    },
-    getRestaurantInfos(itemId){
-        console.log(itemId)
-         this.$router.push({ name: 'Profile' , params:{id : itemId }})
-    }
+  components: { 
+    Load
+  },
+  created(){
+     this.account = JSON.parse(localStorage.getItem('LoggedAccount_city'))
+     this.city = this.account.address;
+     this.NearbyRestaurants()
   },
   data() {
     return {
-      places: [
-        { id: "1", name: "Batatony's", category: "lanches" },
-        { id: "2", name: "Churrasco vegano", category: "churrasco" },
-         { id:"3", name: "Burguer Queen", category: "lanches" },
-      ],
+      loading: false,
+      accountController: new AccountController(),
+      account : null,
+      city: null,
+      restaurants:[],
       headers: [
         { text: "Nome", value: "name" },
         { text: "Categoria", value: "category" },
       ],
     };
+  },
+    methods: {
+    async NearbyRestaurants(){
+    this.loading = true;
+    this.restaurants = await this.accountController.getNearbyRestaurants(this.city);
+    this.restaurants = this.restaurants.data
+    this.loading = false;
+    },
+    back(){
+      this.$router.push({ name: 'Home' })
+    },
+    getRestaurantInfos(mail){
+         this.$router.push({ name: 'Profile' , params:{id : mail }})
+    }
   },
 };
 </script>
