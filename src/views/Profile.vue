@@ -24,11 +24,11 @@
       <v-layout>
         <v-flex>
           <v-icon>mdi-map-marker</v-icon>
-          {{ user.location }}
+          {{ user.address }}
         </v-flex>
       </v-layout>
       <v-layout>
-        <v-flex> {{ user.type }} <v-icon>mdi-food-variant</v-icon> </v-flex>
+        <v-flex> {{ user.category }} <v-icon>mdi-food-variant</v-icon> </v-flex>
         <v-flex v-if="user.deliver">
           <v-icon>mdi-moped</v-icon> deliver
           <v-icon class="icon-green">mdi-check</v-icon>
@@ -46,72 +46,35 @@
           class="image"
         />
         <v-layout column>
-          <div class="foodTitle">{{ item.title }}</div>
-          <div class="subtitle">{{ item.preco }} R$</div>
+          <div class="foodTitle">{{ item.name }}</div>
+          <div class="subtitle">{{ item.price }} R$</div>
         </v-layout>
-        <v-text-field
-          label="Total"
-          type="number"
-          v-model="item.total"
-          class="total"
-        ></v-text-field>
       </v-card>
     </v-container>
-    <v-btn @click="cart=true">
-      <v-icon>mdi-cart</v-icon>
-      Carrinho
-    </v-btn>
-
-    <v-dialog v-model="cart" max-width="500px">
-      <v-card>
-        <v-list>
-            <div class="title">
-           Carrinho
-            </div>
-          <v-list-item-group>
-            <v-list-item v-for="(item, i) in cartList" :key="i">
-                <div>
-
-              <v-list-item-content>
-                <v-list-item-title >
-                    {{item.name}}
-                    {{item.preco}} R$
-                </v-list-item-title>
-              </v-list-item-content>
-                </div>
-            </v-list-item>
-          </v-list-item-group>
-        </v-list>
-        Total: 40 R$
-        <div>
-        <v-btn class="finish-btn" @click="cart = false">Concluir</v-btn>
-        </div>
-      </v-card>
-    </v-dialog>
   </div>
 </template>
 <script>
+import RecipesController from "../controllers/RecipesController";
+import AccountController from "../controllers/AccountsController";
 export default {
-  created() {
-    this.getRestaurantInfos();
+   async created() {
+    let mail = this.$route.params.account.mail;
+    console.log(mail,"mail")
+    this.user = await this.accountController.getUserByEmail(mail);
+    this.user = this.user.data
+    console.log(this.user,'user')
+    this.foods = await this.recipeController.GetRecipesbyId(this.user._id);
+    this.foods = this.foods.data
+     console.log(this.foods,'foods')
+    
     this.getFoodInfos();
   },
   methods: {
-    getRestaurantInfos() {
-      let id = this.$route.params.id;
-      this.userDatabase.forEach((element) => {
-        if (element.id == id) {
-          this.user = element;
-        }
-      });
-    },
+    
+    
     getFoodInfos() {
-      let id = this.$route.params.id;
-      this.foodDatabase.forEach((element) => {
-        if (element.userId == id) {
-          this.foods.push(element);
-        }
-      });
+     
+
     },
     back() {
       this.$router.push({ name: "Map" });
@@ -119,6 +82,8 @@ export default {
   },
   data() {
     return {
+      recipeController: new RecipesController(),
+      accountController: new AccountController(),
       cart: false,
       cartList: [
         {
@@ -132,65 +97,6 @@ export default {
       ],
       user: {},
       foods: [],
-      userDatabase: [
-        {
-          id: "1",
-          name: "Batatony's",
-          img: "https://i.imgur.com/YNAiIRm.png",
-          location: "Centro, Gotham",
-          deliver: true,
-          type: "Lanches",
-          rating: 5,
-        },
-        {
-          id: "2",
-          name: "Churrasco vegano",
-          img: "https://i.imgur.com/Bvsx5il.jpg",
-          location: "Chinatown",
-          deliver: false,
-          type: "Saladas",
-          rating: 4,
-        },
-        {
-          id: "3",
-          name: "Burguer Queen",
-          img: "https://i.imgur.com/LgMUpbU.jpg",
-          location: "Belo Horizonte",
-          deliver: true,
-          type: "Lanches",
-          rating: 5,
-        },
-      ],
-      foodDatabase: [
-        {
-          id: "1",
-          userId: "1",
-          title: "Burgão",
-          img: "https://i.imgur.com/LgMUpbU.jpg",
-          preco: "20,00",
-        },
-        {
-          id: "2",
-          userId: "1",
-          title: "Combo Burguer",
-          img: "https://i.imgur.com/3Jcy5WC.jpg",
-          preco: "30,00",
-        },
-        {
-          id: "3",
-          userId: "2",
-          title: "Salada",
-          img: "https://i.imgur.com/KRUQ2kE.jpg",
-          preco: "10,00",
-        },
-        {
-          id: "4",
-          userId: "3",
-          title: "Hamburguer",
-          img: "https://i.imgur.com/LgMUpbU.jpg",
-          preco: "25,00",
-        },
-      ],
     };
   },
 };

@@ -1,7 +1,7 @@
 <template>
   <div>
     <v-card>
-      <img :src="user.img" id="banner" />
+       <img src="https://i.imgur.com/s53kZUo.png" id="banner" />
       <img src="https://i.imgur.com/YNAiIRm.png" height="100px" id="avatar" />
 
       <v-btn icon id="back-btn" x-large @click="back()">
@@ -35,7 +35,7 @@
     </v-card>
     <v-container>
       <div class="title">Cardápio</div>
-      <v-card class="foodCard" v-for="item in foods" :key="item.id">
+      <v-card class="foodCard" v-for="item in foods" :key="item.name">
         <img
           :src="item.img"
           height="90px"
@@ -47,7 +47,6 @@
           <div class="foodTitle">{{ item.name }}</div>
           <div class="subtitle">{{ item.price }} R$</div>
         </v-layout>
-        <v-icon>mdi-lead-pencil</v-icon>
       </v-card>
     </v-container>
     <v-btn @click="add = true">
@@ -60,14 +59,15 @@
         <div class="title">Novo prato</div>
         <v-card-title>
           <v-layout column>
-            <v-text-field label="Nome"></v-text-field>
-            <v-text-field label="Preço" type="number"></v-text-field>
+            <v-text-field label="Nome"
+            v-model="newRecipeName"></v-text-field>
+            <v-text-field label="Preço" type="number" v-model="newRecipePrice"></v-text-field>
             <div>
-              <v-file-input chips label="Imagem do prato"></v-file-input>
+              <v-text-field chips label="Imagem do prato" v-model="newRecipeImg"></v-text-field>
             </div>
           </v-layout>
         </v-card-title>
-        <v-btn class="finish-btn" @click="add = false">Concluir</v-btn>
+        <v-btn class="finish-btn" @click="newRecipe (),add = false">Concluir</v-btn>
       </v-card>
     </v-dialog>
   </div>
@@ -86,12 +86,21 @@ export default {
       account: null,
       add: false,
       user: {},
+      newRecipePrice: null,
+      newRecipeName: null,
+      newRecipeImg: null,
       foods: [],
     };
   },
   methods: {
     async getRecipes() {
       this.foods = await this.recipeController.GetRecipesbyId(this.user._id);
+     this.foods = this.foods.data;
+    },
+    async newRecipe(){
+      let x = await this.recipeController
+      .NewRecipe(this.newRecipeName,this.newRecipePrice,this.newRecipeImg,this.user._id);
+      this.getRecipes()
     },
     back() {
       this.$router.push({ name: "Login" });

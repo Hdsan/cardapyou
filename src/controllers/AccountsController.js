@@ -13,6 +13,7 @@ export default class AccountsController {
         return err;
       });
   }
+
   async authUser(email, pass) {
     try {
       return await axios.get(`${url}/${email}/${pass}`);
@@ -23,6 +24,14 @@ export default class AccountsController {
   async getNearbyRestaurants(city) {
     try {
       return await axios.get(`${search}/${city}`);
+    } catch (err) {
+      return err;
+    }
+
+  }
+  async getUserByEmail(email) {
+    try {
+      return await axios.get(`${url}/${email}`);
     } catch (err) {
       return err;
     }

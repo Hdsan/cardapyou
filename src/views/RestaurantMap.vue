@@ -13,9 +13,9 @@
       no-results-text="Nenhum restaurante encontrado"
     >
       <template v-slot:item="{ item }">
-        <tr @click="getRestaurantInfos(item.mail)">
+        <tr @click="getRestaurantInfos(item)">
           <td class="text-xs-center">{{ item.name }}</td>
-          <td class="text-xs-center">{{ item.address }}</td>
+          <td class="text-xs-center">{{ item.category }}</td>
           <td class="text-xs-center">
          <v-icon >mdi-chevron-right-circle</v-icon></td>
         </tr>
@@ -38,6 +38,7 @@ export default {
   },
   data() {
     return {
+      id: null,
       loading: false,
       accountController: new AccountController(),
       account : null,
@@ -59,8 +60,8 @@ export default {
     back(){
       this.$router.push({ name: 'Home' })
     },
-    getRestaurantInfos(mail){
-         this.$router.push({ name: 'Profile' , params:{id : mail }})
+    getRestaurantInfos(item){
+         this.$router.push({ name: 'Profile' , params:{account : item }})
     }
   },
 };
